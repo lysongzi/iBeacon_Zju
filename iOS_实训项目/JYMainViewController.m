@@ -8,7 +8,7 @@
 
 #import "JYMainViewController.h"
 #import "UIBarButtonItem+JY.h"
-#import "JYMainTableViewCell.h"
+#import "JYMainCell.h"
 #import "JYMainModel.h"
 #import "JYHeaderView.h"
 #import "JYFooterView.h"
@@ -123,16 +123,17 @@
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //static NSString *cellID=@"cellID";
-    JYMainTableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:@"cellID"];
-    if(cell==nil)
-    {
-        NSLog(@"创建%ld",indexPath.row);
-//        cell=[[JYMainTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
-        cell=[JYMainTableViewCell jyMainTableViewCell];
-    }
-    JYMainModel *dataModel=self.dataArray[indexPath.row];
     
+    static NSString *CellIdentifier=@"cellID";
+    static BOOL nibRegisted=NO;
+    if(!nibRegisted)
+    {
+        UINib *nib=[UINib nibWithNibName:NSStringFromClass([JYMainCell class]) bundle:nil];
+        [tableView registerNib:nib forCellReuseIdentifier:CellIdentifier];
+        nibRegisted=YES;
+    }
+    JYMainCell *cell=(JYMainCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    JYMainModel *dataModel=self.dataArray[indexPath.row];
     cell.marketImage.image=[UIImage imageNamed:dataModel.marketImage];
     cell.marketName.text=dataModel.marketName;
     cell.marketDistance.text=dataModel.marketDistance;
